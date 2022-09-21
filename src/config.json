@@ -1,0 +1,21 @@
+{
+    "token":"",
+    "clientId": "994133223674228736",
+    "guildId": "989980425529212999",
+
+    "GoogleApiKey":"",
+
+    "joiner_channel":"1018008710234263572",
+    "banned_roles":[
+        990039380150329354,
+        990039564150263848,
+        990038667177373759,
+        990039706576252998,
+        990039829779742760,
+        991835795830870097,
+        1020141500480376907
+    ],
+
+    "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/command_log.json",
+    "nsfw_command_list":"./api/command_log.json"
+}
