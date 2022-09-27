@@ -75,7 +75,7 @@ class apis {
 
         this.return_data = null
 
-        deepai.setApiKey()
+        deepai.setApiKey(GoogleApiKey)
         var res = await deepai.callStandardApi("deepdream", {image:url})
 
         return res.output_url

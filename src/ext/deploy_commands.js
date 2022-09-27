@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, Routes, SelectMenuOptionBuilder, CommandInteractionOptionResolver } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { clientId, guildId, token } = require('../croonfig.json');
+const { clientId, guildId, token } = require('../config.json');
 
 const commands = [
 	
@@ -15,6 +15,9 @@ const commands = [
 
 	//e621		
 	new SlashCommandBuilder().setName('e621').setDescription('e621 api ;) NSFW').addBooleanOption(option => option.setName('private').setDescription('only you can view the response (false by default')).addStringOption(option => option.setName('tags').setDescription('tags to search')),
+
+	//KimCartoon
+	new SlashCommandBuilder().setName('kimcartoon').setDescription('Kimcartoon api (no need to deal with ads)').addStringOption(option => option.setName('query').setDescription('cartoon name')),
 
 	//deepdream
 	new SlashCommandBuilder().setName('deep_dream').setDescription('deepdreams any image').addAttachmentOption(option => option.setName('attachment').setDescription('what should i dream up?')),

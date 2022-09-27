@@ -1,9 +1,10 @@
 // Require the necessary discord.js classes
-const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SelectMenuBuilder  } = require('discord.js');
 const fs = require('fs')
 
 const { token, joiner_channel, nsfw_command_list_long, nsfw_command_list, banned_roles } = require('./config.json');
-const { apis } = require('./api/api');
+const { apis } = require('./api/nsfw_api');
+const { KimCartoonApi } = require('./api/cartoon_api')
 
 //set the rich presense
 const set_activity = require('./ext/set_activity'); set_activity
@@ -36,15 +37,6 @@ client.on('guildMemberAdd', async member => {
     )
     
 });
-
-//msg event
-client.on('messageCreate', async res => {
-
-    if (res.content == 'heroku'){
-        res.channel.send('fuck heroku')
-    }
-
-})
 
 
 //command and button events
@@ -221,7 +213,7 @@ client.on('interactionCreate', async interaction => {
 
 
 
-        } else if (commandName === 'music'){
+        } else if (commandName === 'music'){        //for future development
 
             const connection = getVoiceConnection(myVoiceChannel.guild.id);
             console.log(connection)
@@ -236,26 +228,110 @@ client.on('interactionCreate', async interaction => {
                 //display fail msg
 
 
-        } else if (commandName === 'watch'){
+        } else if (commandName === 'kimcartoon'){   //kimcartoon api (gets video link)
 
-            //search for the show on kimcartoon.li
-            //join the vc
-            //play the clip somehow
+            await interaction.deferReply()
 
+            const query = interaction.options.getString('query')
+            
+            //get api to search for results
+            const KCapi = new KimCartoonApi()
+            KCapi.get_search_results(query)
+
+            await sleep(5000)
+            const res = KCapi.return_data
+
+            //check if there was a response
+            if (res == null){
+                interaction.editReply('something went wrong!!')
+            } else {
+
+                let options = []
+                let button_res = []
+                for(let i in res){
+    
+                    const new_option = {
+                        label: String(res[i].title),
+                        description: 'This is a description',
+                        value: String(res[i].link),
+                    }
+
+                    options.push(new_option)
+                }
+
+                //create the selector
+                const row = new ActionRowBuilder()
+                .addComponents(
+                    new SelectMenuBuilder()
+                        .setCustomId('select_season')
+                        .setPlaceholder('Nothing selected')
+                        .addOptions(options),
+                );
+                
+                await interaction.editReply({ content:'please select a season', components: [row]})
+
+            }
 
         }
 
 
-        //join                                   
-        //play                                  ytlink to play -> prev, skip, pause/play, stop buttons 
 
-        //vote                                  yes / no buttons 
-        
-        //help
-        //reddit <- simmilar to r34 and e621    next, prev buttons
     }
 
+    //menu events
+    if( interaction.isSelectMenu() ){
 
+        if (interaction.customId === 'select_season'){          //gets the episode from main select menu
+            await interaction.deferReply()
+
+            const query = interaction.values[0]
+
+            const KCapi = new KimCartoonApi()
+            KCapi.get_episodes(query)
+
+            await sleep(5000)
+            const res = KCapi.return_data
+
+            const options = []
+
+            for (let i in res){
+                const new_option = {
+                    label: String(res[i].text),
+                    description: 'This is a description',
+                    value: String(res[i].link),
+                }
+
+                options.push(new_option)
+            }
+
+            //create the selector
+            const row = new ActionRowBuilder()
+            .addComponents(
+                new SelectMenuBuilder()
+                    .setCustomId('select_episode')
+                    .setPlaceholder('Nothing selected')
+                    .addOptions(options),
+            );
+
+            await interaction.editReply({ content:'please select an episode', components: [row]})
+        } else if (interaction.customId === 'select_episode') { //gets the video link from season select menu
+
+            await interaction.deferReply()
+
+            const query = interaction.values[0]
+
+            const KCapi = new KimCartoonApi()
+            KCapi.video_link(query)
+
+            await sleep(4000)
+            const res = KCapi.return_data
+
+            await interaction.editReply( {content: String(res)} )
+
+        }
+
+        
+    }
 
     //button events
     if (interaction.isButton()){
