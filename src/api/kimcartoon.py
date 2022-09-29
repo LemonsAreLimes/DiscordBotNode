@@ -91,7 +91,7 @@ def get_episodes(link_to_season):
         link = i.get('href')
         text = i.get_text().lstrip()
 
-        data = {"link":f"https://kimcartoon.li/{link}", "text":text}
+        data = {"link":f"https://kimcartoon.li/{link}", "title":text}
         episodes.append(data)
 
     print(json.dumps(episodes))

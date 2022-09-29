@@ -2,7 +2,7 @@
 const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SelectMenuBuilder  } = require('discord.js');
 const fs = require('fs')
 
-const { token, joiner_channel, nsfw_command_list_long, nsfw_command_list, banned_roles } = require('./config.json');
+const { token, joiner_channel, nsfw_command_list_long, nsfw_command_list, banned_roles, KimCartoon_log_long, KimCartoon_log } = require('./config.json');
 const { apis } = require('./api/nsfw_api');
 const { KimCartoonApi } = require('./api/cartoon_api')
 
@@ -231,7 +231,6 @@ client.on('interactionCreate', async interaction => {
         } else if (commandName === 'kimcartoon'){   //kimcartoon api (gets video link)
 
             await interaction.deferReply()
-
             const query = interaction.options.getString('query')
             
             //get api to search for results
@@ -242,49 +241,132 @@ client.on('interactionCreate', async interaction => {
             const res = KCapi.return_data
 
             //check if there was a response
-            if (res == null){
+            if (res == undefined){
                 interaction.editReply('something went wrong!!')
+            
             } else {
 
+                var request_id = Math.round(Math.random() * 1000000)
+
+                //parse it and make sure its not over 25 items
                 let options = []
-                let button_res = []
+                var larger_then_25 = false
+
+                //read file
+                const KC_log = require(KimCartoon_log)
+
+                //append new data
+                const write_data = {
+                    "id":request_id,
+                    "data":res
+                }
+
+                //write it
+                KC_log.push(write_data)
+                fs.writeFileSync(KimCartoon_log_long, JSON.stringify(KC_log), (a, b)=>{ console.log(a + b) })
+
+
                 for(let i in res){
-    
+
+                    //if larger then 25 items
+                    if (i >= 25){
+                        larger_then_25 = true
+                        break
+                    }
+
+                    const small_name = String(res[i].title).replace('Season ','S').replace("Episode",  "E").substring(0, 99)
+
+                    //create the entires in the selector
                     const new_option = {
-                        label: String(res[i].title),
-                        description: 'This is a description',
-                        value: String(res[i].link),
+                        label: small_name,
+                        description: small_name,
+                        value: String(i),
                     }
 
                     options.push(new_option)
                 }
 
                 //create the selector
-                const row = new ActionRowBuilder()
+                const menu = new ActionRowBuilder()
                 .addComponents(
                     new SelectMenuBuilder()
                         .setCustomId('select_season')
                         .setPlaceholder('Nothing selected')
                         .addOptions(options),
-                );
-                
-                await interaction.editReply({ content:'please select a season', components: [row]})
+                )
+
+                let res_embed = []
+                let components = [menu]
+
+                if (larger_then_25 == true){
+
+                    //create new embed
+                    const embed = new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle(`KimCartoon: ${query}. `)
+                        .setDescription('please select a season from the dropdown menu \n\n' + 'WARING: due to discord limiting select menus to 25 items. your results may not be on the first page!')
+                        .addFields({ name: 'request id', value: String(request_id), inline: true })
+                        .addFields({ name: 'page', value: String(0), inline: true })
+
+                    //create buttons if the response is larger then 25
+                    const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                        .setCustomId('KC_prev')
+                        .setLabel('prev')
+                        .setStyle(ButtonStyle.Primary)
+                    ).addComponents(
+                        new ButtonBuilder()
+                        .setCustomId('KC_next')
+                        .setLabel('next')
+                        .setStyle(ButtonStyle.Primary)
+                    )
+
+                    res_embed.push(embed)
+                    components.push(buttons)
+
+                } else {
+
+                    //create embed
+                    const embed = new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle(`KimCartoon: ${query}`)
+                        .setDescription('please select a season from the dropdown menu')
+                        .addFields({ name: 'request id', value: String(request_id), inline: true })
+
+                    res_embed = [embed]
+                }
+
+                await interaction.editReply({ embeds:res_embed, components: components})
 
             }
-
         }
-
-
 
     }
 
-    //menu events
+    //menu events               (ALL OF THIS NEEDS TO BE REWORKED)
     if( interaction.isSelectMenu() ){
 
         if (interaction.customId === 'select_season'){          //gets the episode from main select menu
+            
             await interaction.deferReply()
 
-            const query = interaction.values[0]
+            //find the link in the db via value
+            const request_id = interaction.message.embeds[0].data.fields[0].value
+            const value = interaction.values[0]
+            let query = ''
+
+            //read file
+            const KC_log = require(KimCartoon_log)
+
+            //find the request id
+            for ( let i in KC_log ){
+
+                //find the value
+                if (KC_log[i].id == request_id){
+                    query = KC_log[i].data[value].link
+                }
+            }
 
             const KCapi = new KimCartoonApi()
             KCapi.get_episodes(query)
@@ -292,34 +374,127 @@ client.on('interactionCreate', async interaction => {
             await sleep(5000)
             const res = KCapi.return_data
 
-            const options = []
+            //check if there was a response
+            if (res == undefined){
+                interaction.editReply('something went wrong!!')
+            
+            } else {
 
-            for (let i in res){
-                const new_option = {
-                    label: String(res[i].text),
-                    description: 'This is a description',
-                    value: String(res[i].link),
+                var new_request_id = Math.round(Math.random() * 1000000)
+
+                //parse it and make sure its not over 25 items
+                let options = []
+                var larger_then_25 = false
+
+                //read file
+                const KC_log = require(KimCartoon_log)
+
+                //append new data
+                const write_data = {
+                    "id":new_request_id,
+                    "data":res
                 }
 
-                options.push(new_option)
+                //write it
+                KC_log.push(write_data)
+                fs.writeFileSync(KimCartoon_log_long, JSON.stringify(KC_log), (a, b)=>{ console.log(a + b) })
+
+                for(let i in res){
+
+                    //if larger then 25 items
+                    if (i >= 25){
+                        larger_then_25 = true
+                        break
+                    }
+
+                    const small_name = String(res[i].title).replace('Season ','S').replace("Episode",  "E").substring(0, 99)
+
+                    //create the entires in the selector
+                    const new_option = {
+                        label: small_name,
+                        description: small_name,
+                        value: String(i),
+                    }
+
+                    options.push(new_option)
+                }
+
+                //create the selector
+                const menu = new ActionRowBuilder()
+                .addComponents(
+                    new SelectMenuBuilder()
+                        .setCustomId('select_episode')
+                        .setPlaceholder('Nothing selected')
+                        .addOptions(options),
+                )
+
+                let res_embed = []
+                let components = [menu]
+
+                if (larger_then_25 == true){
+
+                    //create new embed
+                    const embed = new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle(`KimCartoon: ${query}. `)
+                        .setDescription('please select an episode from the dropdown menu \n\n' + 'WARING: due to discord limiting select menus to 25 items. your results may not be on the first page!')
+                        .addFields({ name: 'request id', value: String(new_request_id), inline: true })
+                        .addFields({ name: 'page', value: String(0), inline: true })
+
+                    //create buttons if the response is larger then 25
+                    const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                        .setCustomId('KC_prev')
+                        .setLabel('prev')
+                        .setStyle(ButtonStyle.Primary)
+                    ).addComponents(
+                        new ButtonBuilder()
+                        .setCustomId('KC_next')
+                        .setLabel('next')
+                        .setStyle(ButtonStyle.Primary)
+                    )
+
+                    res_embed.push(embed)
+                    components.push(buttons)
+
+                } else {
+
+                    //create embed
+                    const embed = new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle(`KimCartoon: ${query}`)
+                        .setDescription('please select an episode from the dropdown menu')
+                        .addFields({ name: 'request id', value: String(new_request_id), inline: true })
+
+                    res_embed = [embed]
+                }
+
+                await interaction.editReply({ embeds:res_embed, components: components})
+
             }
 
-            //create the selector
-            const row = new ActionRowBuilder()
-            .addComponents(
-                new SelectMenuBuilder()
-                    .setCustomId('select_episode')
-                    .setPlaceholder('Nothing selected')
-                    .addOptions(options),
-            );
-
-            await interaction.editReply({ content:'please select an episode', components: [row]})
         } else if (interaction.customId === 'select_episode') { //gets the video link from season select menu
 
             await interaction.deferReply()
 
-            const query = interaction.values[0]
+            //find the link in the db via value
+            const request_id = interaction.message.embeds[0].data.fields[0].value
+            const value = interaction.values[0]
+            let query = ''
 
+            //read file
+            const KC_log = require(KimCartoon_log)
+
+            //find the request id
+            for ( let i in KC_log ){
+
+                //find the value
+                if (KC_log[i].id == request_id){
+                    query = KC_log[i].data[value].link
+                }
+            }
+        
             const KCapi = new KimCartoonApi()
             KCapi.video_link(query)
 
@@ -365,9 +540,7 @@ client.on('interactionCreate', async interaction => {
 
                 //write changes to current
                 const write_data = JSON.stringify(command_log)
-                fs.writeFileSync(nsfw_command_list_long, write_data, (a, b)=>{
-                    console.log(a + b)
-                })
+                fs.writeFileSync(nsfw_command_list_long, write_data, (a, b)=>{ console.log(a + b) })
 
                 //create new embed
                 const embed = new EmbedBuilder()
@@ -381,6 +554,99 @@ client.on('interactionCreate', async interaction => {
             })
 
         
+        } else if (interaction.customId == "KC_prev" || interaction.customId == "KC_next"){
+
+            await interaction.deferUpdate()
+
+            //get the request id
+            let id = interaction.message.embeds[0].data.fields[0].value
+            let page_no = parseInt( interaction.message.embeds[0].data.fields[1].value )
+
+            //check if its next or prev
+            if(interaction.customId == "KC_prev" && page_no != 0){
+                next_page = page_no - 1
+            } else if (interaction.customId == "KC_prev" && page_no == 0){
+                interaction.message.edit('you cannot do that!')
+                return
+            } else {
+                next_page = page_no + 1
+            }
+
+            //search for it in the kimcartoon log
+            const KC_log = require(KimCartoon_log)
+
+            //find the correct reques
+            for (let i in KC_log){
+
+                //get the data from it
+                if (KC_log[i].id == id){
+
+                    //define offset and the new data
+                    var offset = 25 * next_page
+                    let options = []
+
+                    for (let data in KC_log[i].data){
+
+                        if ( data - 25 >= offset || data >= KC_log[i].data.length ){
+
+                            //when done getting the data
+                            break
+                            
+                        } else if (data >= offset){
+                            let desc = String(KC_log[i].data[data].title).replace('Season ', 'S').replace('Episode ', 'E').substring(0, 99)
+
+                            //create the entires in the selector
+                            const new_option = {
+                                label: desc,
+                                description: desc,
+                                value: String(data),
+                            }
+
+                            options.push(new_option)
+                        } 
+                    }
+                        
+                    //create buttons if the response is larger then 25
+                    const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                        .setCustomId('KC_prev')
+                        .setLabel('prev')
+                        .setStyle(ButtonStyle.Primary)
+                    ).addComponents(
+                        new ButtonBuilder()
+                        .setCustomId('KC_next')
+                        .setLabel('next')
+                        .setStyle(ButtonStyle.Primary)
+                    )
+
+                    //change the options in select menu
+                    const menu = new ActionRowBuilder()
+                    .addComponents(
+                        new SelectMenuBuilder()
+                            .setCustomId('select_season')
+                            .setPlaceholder('Nothing selected')
+                            .addOptions(options),
+                    )
+
+                    //get the title of embed
+                    const title = String(interaction.message.embeds[0].data.title)
+
+                    //define new embed
+                    const embed = new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle(title)
+                        .setDescription('please select a season from the dropdown menu \n\n' + 'WARING: due to discord limiting select menus to 25 items. your results may not be on the first page!')
+                        .addFields({ name: 'request id', value: id, inline: true })
+                        .addFields({ name: 'page', value: String(next_page), inline: true })
+
+                    //edit the page number in embed
+                    await interaction.message.edit({ embeds:[embed], components:[menu, buttons] })
+                }
+
+            }
+
+
         }
 
 

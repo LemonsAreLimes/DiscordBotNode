@@ -17,5 +17,7 @@
     ],
 
     "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/command_log.json",
-    "nsfw_command_list":"./api/command_log.json"
+    "nsfw_command_list":"./api/command_log.json",
+    "KimCartoon_log_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/KimCartoon_log.json",
+    "KimCartoon_log":"./api/KimCartoon_log.json"
 }
