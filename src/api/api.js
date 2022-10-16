@@ -1,7 +1,8 @@
 var https = require('https');
 var xmltojson = require('xml-js')
 const deepai = require('deepai')
-const { GoogleApiKey } = require('../config.json')
+const { exec } = require("child_process");
+const { keys, file_locations } = require('../config.json')
 
 class apis {
 
@@ -35,7 +36,6 @@ class apis {
             });
         });
     }
-
     e621(query){
 
         this.return_data = null
@@ -68,17 +68,72 @@ class apis {
             });
         });
     }
-
     async deepDream(url){
 
         console.log('called')
 
         this.return_data = null
 
-        deepai.setApiKey(GoogleApiKey)
+        deepai.setApiKey(keys.GoogleApiKey)
         var res = await deepai.callStandardApi("deepdream", {image:url})
 
         return res.output_url
+    }
+
+    async kcGetRequest(request_id, value=null){
+
+        //read file
+        const KC_log = require(file_locations.KimCartoon_log)
+
+        //find the request id
+        for ( let i in KC_log ){
+
+            //find the value
+            if (KC_log[i].id == request_id){
+
+                if (value != null){
+                    return KC_log[i].data[value].link
+                } else {
+                    return KC_log[i].data
+                }
+                
+            }
+
+
+        }
+
+    }
+
+    async get_search_results(query){
+
+        console.log('called')
+
+        exec(`python -c "import kimcartoon; kimcartoon.get_search_results('${query}')"`, (a, res, c) => {
+
+            const data = JSON.parse(res)
+            this.return_data = data
+        })
+     
+    }
+    
+    async get_episodes(season){
+    
+        exec(`python -c "import kimcartoon; kimcartoon.get_episodes('${season}')"`, (a, res, c) => {
+    
+            this.return_data = JSON.parse(res)
+
+        })
+    
+    }
+    
+    async video_link(episode){
+    
+        exec(`python -c "import kimcartoon; kimcartoon.get_video('${episode}')"`, (a, res, c) => {
+    
+            this.return_data = res
+
+        })
+    
     }
 
 }

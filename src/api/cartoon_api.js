@@ -8,9 +8,6 @@ class KimCartoonApi {
         this.isBigList
     }
 
-    
-
-
     async get_search_results(query){
 
         console.log('called')

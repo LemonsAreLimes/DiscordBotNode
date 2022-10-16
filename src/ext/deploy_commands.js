@@ -1,38 +1,72 @@
-const { SlashCommandBuilder, Routes, SelectMenuOptionBuilder, CommandInteractionOptionResolver } = require('discord.js');
+const { SlashCommandBuilder, Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { clientId, guildId, token } = require('../config.json');
+
+const { clientId, keys , guilds} = require('../config.json');
 
 const commands = [
 	
 	//test command
-	new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
+	new SlashCommandBuilder()
+		.setName('ping')
+		.setDescription('Replies with pong!'),
 
 	//avatar
-	new SlashCommandBuilder().setName('avatar').setDescription('replies with a users profile picture').addUserOption(option => option	.setName('target')	.setDescription('whos avater do u want?')),
+	new SlashCommandBuilder()
+		.setName('avatar')
+		.setDescription('replies with a users profile picture')
+		.addUserOption(option => option	
+			.setName('target')	
+			.setDescription('whos avater do u want?')),
 
 	//rule34
-	new SlashCommandBuilder().setName('rule34').setDescription('rule34 api ;) NSFW').addBooleanOption(option => option.setName('private').setDescription('only you can view the response (false by default)')).addStringOption(option => option.setName('tags').setDescription('tag sto search')),
+	new SlashCommandBuilder()
+		.setName('rule34')
+		.setDescription('rule34 api ;) NSFW')
+		.addStringOption(option => option
+			.setName('tags')
+			.setDescription('tag to search')),
 
 	//e621		
-	new SlashCommandBuilder().setName('e621').setDescription('e621 api ;) NSFW').addBooleanOption(option => option.setName('private').setDescription('only you can view the response (false by default')).addStringOption(option => option.setName('tags').setDescription('tags to search')),
+	new SlashCommandBuilder()
+		.setName('e621')
+		.setDescription('e621 api ;) NSFW')
+		.addStringOption(option => option
+			.setName('tags')
+			.setDescription('tags to search')),
 
 	//KimCartoon
-	new SlashCommandBuilder().setName('kimcartoon').setDescription('Kimcartoon api (no need to deal with ads)').addStringOption(option => option.setName('query').setDescription('cartoon name')),
+	new SlashCommandBuilder()
+		.setName('kimcartoon')
+		.setDescription('Kimcartoon api (no need to deal with ads)')
+		.addStringOption(option => option
+			.setName('query')
+			.setDescription('cartoon name')),
 
 	//deepdream
-	new SlashCommandBuilder().setName('deep_dream').setDescription('deepdreams any image').addAttachmentOption(option => option.setName('attachment').setDescription('what should i dream up?')),
+	new SlashCommandBuilder()
+		.setName('deep_dream')
+		.setDescription('deepdreams any image')
+		.addAttachmentOption(option => option
+			.setName('attachment')
+			.setDescription('what should i dream up?')),
 
-	//roles
-	new SlashCommandBuilder().setName('roles').setDescription('gives you a role').addRoleOption(option => option.setName('role').setDescription('what role do you want?'))
 
 ].map(command => command.toJSON());
 
-const rest = new REST({ version: '10' }).setToken(token);
+const rest = new REST({ version: '10' }).setToken(keys.token);
 
-//creates commands
-rest.put(Routes.applicationGuildCommands("994133223674228736", guildId), { body: commands })
-	.then((data) => console.log(`Successfully registered ${data.length} application commands.`))
-	.catch(console.error);
+for (let i in guilds){
+
+	console.log(`adding commands to server: ${guilds[i].id}`)
+
+	//creates commands
+	rest.put(Routes.applicationGuildCommands(clientId, guilds[i].id), { body: commands })
+		.then((data) => console.log(`Successfully registered ${data.length} application commands.`))
+		.catch(console.error);
+
+}
+
+
 
 
 //detes all commands 

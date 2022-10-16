@@ -1,23 +1,40 @@
 {
-    "token":"",
+    "keys":{
+        "token":"",
+        "google":""
+    },
+
+    "file_locations":{
+        "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/command_log.json",
+        "nsfw_command_list":"./api/command_log.json",
+        "KimCartoon_log_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/KimCartoon_log.json",
+        "KimCartoon_log":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/KimCartoon_log.json"
+    },
+
     "clientId": "994133223674228736",
-    "guildId": "989980425529212999",
 
-    "GoogleApiKey":"",
+    "guilds":[
 
-    "joiner_channel":"1018008710234263572",
-    "banned_roles":[
-        990039380150329354,
-        990039564150263848,
-        990038667177373759,
-        990039706576252998,
-        990039829779742760,
-        991835795830870097,
-        1020141500480376907
-    ],
+        {
+            "id":"994133052999598150",
+            "name":"test",
+            "joiner_channel":"994133052999598153",
+            "role_add_message":"1031037871580270612",
+            "roles":{
+                "unverified":"None",
+                "verified": "None",
+                "admin":"None",
+                "non_acssessable":[],
+                "role_table":[
+                    {"name":"test", "emoji":"🏳️‍🌈", "id":"1031041246803800105"}
+                ]
 
-    "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/command_log.json",
-    "nsfw_command_list":"./api/command_log.json",
-    "KimCartoon_log_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/KimCartoon_log.json",
-    "KimCartoon_log":"./api/KimCartoon_log.json"
+            }
+        }
+
+
+
+    ]
 }
+
+
