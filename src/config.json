@@ -5,10 +5,10 @@
     },
 
     "file_locations":{
-        "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/command_log.json",
+        "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
         "nsfw_command_list":"./api/command_log.json",
-        "KimCartoon_log_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/KimCartoon_log.json",
-        "KimCartoon_log":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/api/KimCartoon_log.json"
+        "KimCartoon_log_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
+        "KimCartoon_log":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json"
     },
 
     "clientId": "994133223674228736",
@@ -30,9 +30,37 @@
                 ]
 
             }
+        },
+
+        {"id":"1021539090396610651"},
+
+        {
+            "id":"989980425529212999",
+            "name":"the server lol",
+            "joiner_channel":"990364347446460426",
+            "role_add_message":"1031054096708411412",
+            "roles":{
+                "unverified":"None",
+                "verified": "None",
+                "admin":"None",
+                "non_acssessable":[],
+                "role_table":[
+                    {"emoji":"🇷", "id":"990039992799752192"},
+                    {"emoji":"🇬", "id":"990040077902180443"},
+                    {"emoji":"🇧", "id":"990040103512571924"},
+                    {"emoji":"🇨", "id":"990040131874480158"},
+                    {"emoji":"🇲", "id":"990040172118827060"},
+                    {"emoji":"🇾", "id":"990040219053097050"},
+                    {"emoji":"🇰", "id":"990040253081477140"},
+                    {"emoji":"☄️", "id":"990497984452104215"},
+                    {"emoji":"🥳", "id":"990498079927046234"},
+                    {"emoji":"🗿", "id":"1014394828634726510"},
+                    {"emoji":"😵‍💫", "id":"990039934725414953"},
+                    {"emoji":"💻", "id":"1031041246803800105"}
+                ]
+
+            }
         }
-
-
 
     ]
 }

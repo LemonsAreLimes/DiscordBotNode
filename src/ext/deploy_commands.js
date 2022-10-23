@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, Routes } = require('discord.js');
+const { SlashCommandBuilder, Routes, Options } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 
 const { clientId, keys , guilds} = require('../config.json');
@@ -49,6 +49,30 @@ const commands = [
 		.addAttachmentOption(option => option
 			.setName('attachment')
 			.setDescription('what should i dream up?')),
+
+	//play command
+	new SlashCommandBuilder()
+		.setName('play')
+		.setDescription("play somethin'")
+		.addStringOption(option => option
+			.setName('name')
+			.setDescription('the song name to search')),
+
+	//pause command
+	new SlashCommandBuilder()
+		.setName('pause')
+		.setDescription('pause the music'),
+
+	//skip command
+	new SlashCommandBuilder()
+		.setName('skip')
+		.setDescription('turn that rank ahh shii off man'),
+
+	//queue command
+	new SlashCommandBuilder()
+		.setName('queue')
+		.setDescription('see whats up next'),
+
 
 
 ].map(command => command.toJSON());

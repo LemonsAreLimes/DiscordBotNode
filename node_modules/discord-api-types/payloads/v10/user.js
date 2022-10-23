@@ -90,13 +90,15 @@ var UserPremiumType;
 var ConnectionService;
 (function (ConnectionService) {
     ConnectionService["BattleNet"] = "battlenet";
+    ConnectionService["eBay"] = "ebay";
     ConnectionService["EpicGames"] = "epicgames";
     ConnectionService["Facebook"] = "facebook";
     ConnectionService["GitHub"] = "github";
     ConnectionService["LeagueOfLegends"] = "leagueoflegends";
+    ConnectionService["PayPal"] = "paypal";
     ConnectionService["PlayStationNetwork"] = "playstation";
     ConnectionService["Reddit"] = "reddit";
-    ConnectionService["SamsungGalaxy"] = "samsunggalaxy";
+    ConnectionService["RiotGames"] = "riotgames";
     ConnectionService["Spotify"] = "spotify";
     ConnectionService["Skype"] = "skype";
     ConnectionService["Steam"] = "steam";
