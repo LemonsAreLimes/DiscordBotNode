@@ -1,0 +1,58 @@
+{
+    
+    "guilds":[
+
+        {
+            "id":"994133052999598150",
+            "name":"test",
+            "joiner_channel":"994133052999598153",
+            
+            "config":{
+                "reactonRoleEnabled":true,
+                "verifiyEnabled":false,
+                "nsfwEnabled":true,
+                "announceJoinEnabled":false
+            },
+            "role_add_message":"1031037871580270612",
+            "roles":{
+                "unverified":"None",
+                "verified": "None",
+                "admin":"None",
+                "non_acssessable":[],
+                "role_table":[
+                    {"name":"test", "emoji":"🏳️‍🌈", "id":"1031041246803800105"}
+                ]
+
+            }
+        },
+        {"id":"1021539090396610651"},
+        {"id":"893927661557145631"},
+        {
+            "id":"989980425529212999",
+            "name":"the server lol",
+            "joiner_channel":"990364347446460426",
+            "role_add_message":"1031054096708411412",
+            "roles":{
+                "unverified":"None",
+                "verified": "None",
+                "admin":"None",
+                "role_table":[
+                    {"emoji":"🇷", "id":"990039992799752192"},
+                    {"emoji":"🇬", "id":"990040077902180443"},
+                    {"emoji":"🇧", "id":"990040103512571924"},
+                    {"emoji":"🇨", "id":"990040131874480158"},
+                    {"emoji":"🇲", "id":"990040172118827060"},
+                    {"emoji":"🇾", "id":"990040219053097050"},
+                    {"emoji":"🇰", "id":"990040253081477140"},
+                    {"emoji":"☄️", "id":"990497984452104215"},
+                    {"emoji":"🥳", "id":"990498079927046234"},
+                    {"emoji":"🗿", "id":"1014394828634726510"},
+                    {"emoji":"😵‍💫", "id":"990039934725414953"},
+                    {"emoji":"💻", "id":"1031041246803800105"}
+                ]
+
+            }
+        }
+    ]
+
+}

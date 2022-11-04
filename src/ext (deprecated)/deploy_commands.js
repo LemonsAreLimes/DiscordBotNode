@@ -1,6 +1,5 @@
-const { SlashCommandBuilder, Routes, Options } = require('discord.js');
+const { SlashCommandBuilder, Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-
 const { clientId, keys , guilds} = require('../config.json');
 
 const commands = [
@@ -72,7 +71,6 @@ const commands = [
 	new SlashCommandBuilder()
 		.setName('queue')
 		.setDescription('see whats up next'),
-
 
 
 ].map(command => command.toJSON());

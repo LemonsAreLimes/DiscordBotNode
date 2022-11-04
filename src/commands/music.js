@@ -1,22 +1,28 @@
-const { createAudioPlayer, createAudioResource, NoSubscriberBehavior, AudioPlayerStatus  } = require('@discordjs/voice');
-const { QueryType } = require("discord-player")
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior, AudioPlayerStatus } = require('@discordjs/voice');
+const { QueryType, Player } = require("discord-player")
 const ytdl = require('ytdl-core')
 const fs = require('fs')
 
 class musicCommands {
 
-    constructor(){
+    constructor(client){
 
         this.id = ''
         this.queue = []
         this.playing = false
         this.paused = false
+        this.client = client
         this.audio_player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
-        
+        this.player = new Player(client, { ytdlOptions: { quality: "highestaudio" } })
+        this.connection = {}
+
+        this.player.on('botDisconnect', () => {
+            this.id = null
+            console.log('removing player...')
+        });
+
         this.audio_player.on(AudioPlayerStatus.Idle, (x, y) => {
             this.playing = false
-
-            console.log('event called!')
 
             //check if the queue is empty
             if( this.queue[0] ){
@@ -42,12 +48,12 @@ class musicCommands {
     }
 
     //searches youtube for query
-    async search(player, ctx){
+    async search(ctx){
 
         const query = ctx.options.getString("name")
 
         //search the audio on yt
-        const result = await player.search(query, {
+        const result = await this.player.search(query, {
             requestedBy: ctx.user,
             searchEngine: QueryType.AUTO
         })
@@ -60,6 +66,18 @@ class musicCommands {
         }
 
         return song_data
+
+    }
+
+    async connect(ctx){
+
+        this.connection = joinVoiceChannel({
+            channelId: ctx.member.voice.channelId,
+            guildId: ctx.guild.id,
+            adapterCreator: ctx.guild.voiceAdapterCreator,
+        });
+
+        this.connection.subscribe(this.audio_player);
 
     }
 
@@ -92,6 +110,13 @@ class musicCommands {
         }
 
     }
+
+    disconnect(){
+
+        this.connection.destroy()
+
+    }
+
 }
 
 module.exports = { musicCommands } 

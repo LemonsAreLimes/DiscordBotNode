@@ -1,68 +1,17 @@
 {
     "keys":{
-        "token":"",
+        "token":"OTk0MTMzMjIzNjc0MjI4NzM2.GNBqLP.JFPkQ6PCS2tdLEiLNhTkDFwgYDhm9kjxDb7z-E",
         "google":""
     },
 
     "file_locations":{
-        "nsfw_command_list_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
-        "nsfw_command_list":"./api/command_log.json",
-        "KimCartoon_log_long":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
-        "KimCartoon_log":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json"
+        "nsfwCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
+        "KimCartoonCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
+        "guildConfig":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json"
     },
 
-    "clientId": "994133223674228736",
-
-    "guilds":[
-
-        {
-            "id":"994133052999598150",
-            "name":"test",
-            "joiner_channel":"994133052999598153",
-            "role_add_message":"1031037871580270612",
-            "roles":{
-                "unverified":"None",
-                "verified": "None",
-                "admin":"None",
-                "non_acssessable":[],
-                "role_table":[
-                    {"name":"test", "emoji":"🏳️‍🌈", "id":"1031041246803800105"}
-                ]
-
-            }
-        },
-
-        {"id":"1021539090396610651"},
-
-        {
-            "id":"989980425529212999",
-            "name":"the server lol",
-            "joiner_channel":"990364347446460426",
-            "role_add_message":"1031054096708411412",
-            "roles":{
-                "unverified":"None",
-                "verified": "None",
-                "admin":"None",
-                "non_acssessable":[],
-                "role_table":[
-                    {"emoji":"🇷", "id":"990039992799752192"},
-                    {"emoji":"🇬", "id":"990040077902180443"},
-                    {"emoji":"🇧", "id":"990040103512571924"},
-                    {"emoji":"🇨", "id":"990040131874480158"},
-                    {"emoji":"🇲", "id":"990040172118827060"},
-                    {"emoji":"🇾", "id":"990040219053097050"},
-                    {"emoji":"🇰", "id":"990040253081477140"},
-                    {"emoji":"☄️", "id":"990497984452104215"},
-                    {"emoji":"🥳", "id":"990498079927046234"},
-                    {"emoji":"🗿", "id":"1014394828634726510"},
-                    {"emoji":"😵‍💫", "id":"990039934725414953"},
-                    {"emoji":"💻", "id":"1031041246803800105"}
-                ]
-
-            }
-        }
-
-    ]
+    "reloadCommandsOnReady":true,
+    "clientId": "994133223674228736"
 }
 
 

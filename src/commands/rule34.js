@@ -45,7 +45,7 @@ class rule34 {
                 //add to file
                 command_log.log.push(new_command_data)
                 const write_data = JSON.stringify(command_log)
-                fs.writeFileSync(file_locations.nsfw_command_list_long, write_data, (a, b)=>{console.log(a + b)})
+                fs.writeFileSync(file_locations.nsfwCmdLog, write_data, (a, b)=>{console.log(a + b)})
 
                 //create embed
                 const embed = new EmbedBuilder()
@@ -100,7 +100,7 @@ class rule34 {
 
             //write changes to current
             const write_data = JSON.stringify(command_log)
-            fs.writeFileSync(file_locations.nsfw_command_list_long, write_data, (a, b)=>{ console.log(a + b) })
+            fs.writeFileSync(file_locations.nsfwCmdLog, write_data, (a, b)=>{ console.log(a + b) })
 
             //create new embed
             const embed = new EmbedBuilder()

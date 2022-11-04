@@ -1,11 +1,9 @@
 // Require the necessary discord.js classes
-const { Client, GatewayIntentBits, Partials, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SelectMenuBuilder, Guild } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior, AudioPlayerStatus  } = require('@discordjs/voice');
-const { QueryType, Player } = require("discord-player")
-const fs = require('fs')
+const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js');
 
-const { guilds, keys } = require('./config.json');
-const { musicCommands, rule34, e621, kimcartoon} = require('./commands/command_header')
+const { musicCommands, rule34, e621, kimcartoon, deployCommands } = require('./commands/command_header');
+const { keys, reloadCommandsOnReady } = require('./config.json');
+const { guilds } = require('./guilds.json');
 
 
 // Create a new client instance
@@ -26,8 +24,19 @@ const client = new Client({
 });
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
-	console.log('Rokos Baskilisk is back online!');
+client.once('ready', async () => {
+    if( reloadCommandsOnReady == true ){
+        console.log('reloading commands...')
+        await new deployCommands().reloadAll()
+    }
+
+    console.log('██████╗  ██████╗ ██╗  ██╗ ██████╗ ')
+    console.log('██╔══██╗██╔═══██╗██║ ██╔╝██╔═══██╗')
+    console.log('██████╔╝██║   ██║█████╔╝ ██║   ██║ ┌┐ ┌─┐┌─┐┬┬  ┬┌─┐┬┌─')
+    console.log('██╔══██╗██║   ██║██╔═██╗ ██║   ██║ ├┴┐├─┤└─┐││  │└─┐├┴┐')
+    console.log('██║  ██║╚██████╔╝██║  ██╗╚██████╔╝ └─┘┴ ┴└─┘┴┴─┘┴└─┘┴ ┴')
+    console.log('╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝   ~is now online!')
+
 });
 
 //user join event
@@ -53,15 +62,17 @@ client.on('guildMemberAdd', async member => {
 });
 
 //when the bot joins a guild this will be worked on next update
-// client.on('guildCreate', async guild => {
+client.on('guildCreate', async guild => {
 
-//     // //dm the person that made the bot join
-//     // console.log(guild.)
+    //add the slash commands to this guild
+    await new deployCommands().setGuild(guild.id)
 
+    //add the guild to the guilds list
+    //send a message to the user that sent the message => edits config
 
-// });
+});
 
-//reacton roles
+//reacton roles (add)
 client.on('messageReactionAdd', async (message, user) => {
 
     //check the guilds in the config
@@ -92,12 +103,44 @@ client.on('messageReactionAdd', async (message, user) => {
 
         } 
     }
+});
+
+//reaction roles (remove)
+client.on('messageReactionRemove', async (message, user) => {
+    //get the role id in the guild config
+    for( let i in guilds ){
+
+        //if the message id is correct
+        if( guilds[i].role_add_message == message.message.id ){
+
+            const emoji = message.emoji.name 
+            for( let x in guilds[i].roles.role_table ){
+
+                //when found
+                if( guilds[i].roles.role_table[x].emoji == emoji ){
+
+                    //get all the vars
+                    const guild = await client.guilds.fetch(message.message.guildId)
+                    const role = await guild.roles.fetch(guilds[i].roles.role_table[x].id)
+                    const target = await guild.members.fetch(user.id)
+                
+                    //remove the role from the user
+                    await target.roles.remove(role)
+                    
+
+                }
+
+            }
+
+        }
+
+    }
 
 
 });
 
-//create a new player
-const player = new Player(client, { ytdlOptions: { quality: "highestaudio" } })
+
+//create the active players list (only used for music commands)
 let active_players = []
 console.log('player initalized')
 
@@ -147,13 +190,18 @@ client.on('interactionCreate', async interaction => {
             } 
 
             //search for the audio
-            const command_handler = new musicCommands()
-            const search_result = await command_handler.search(player, interaction)
+            const command_handler = new musicCommands(client)
+            const search_result = await command_handler.search(interaction)
 
             //check if there already is a connection to the guild
             if( active_players != [] ){
                 for( let i in active_players ){
-                    if( active_players[i].id == interaction.guildId){
+
+                    //remove any players that are disabled
+                    if( active_players[i].id == null ){
+                        delete active_players[i]
+                    
+                    } else if( active_players[i].id == interaction.guildId){
 
                         //if its playing add to queue
                         if( active_players[i].playing ){
@@ -167,16 +215,9 @@ client.on('interactionCreate', async interaction => {
                 }
             }
 
-            //connect to the voice channel / create a new connection
-            const connection = joinVoiceChannel({
-                channelId: interaction.member.voice.channelId,
-                guildId: interaction.guild.id,
-                adapterCreator: interaction.guild.voiceAdapterCreator,
-            });
-            
-            //connect the audio player to the channel
-            const audio_player = command_handler.init(interaction)
-            connection.subscribe(audio_player);
+            //initalize the music command hanler and connect to the voice channel
+            command_handler.init(interaction)
+            command_handler.connect(interaction)
             
             //download and play the file
             command_handler.play(search_result)
@@ -185,7 +226,7 @@ client.on('interactionCreate', async interaction => {
             await interaction.editReply(`now playing: ${search_result.title}`)
             active_players.push(command_handler)
 
-        } else if (commandName === 'pause'){
+        } else if (commandName === 'pause'){                                    
 
             //find the player
             if( active_players != [] ){
@@ -201,19 +242,19 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply('bro theres nothing playing whatchu expect to happen')
             }
 
-        } else if (commandName === 'skip'){
-
+        } else if (commandName === 'skip'){                                     
             //find the player
             if( active_players != [] ){
                 for( let i in active_players ){
                     if( active_players[i].id == interaction.guild.id ){
-                        
+
                         //check if its playing something
                         if( active_players[i].playing ){
                             const q = active_players[i].queue
                             active_players[i].play(q[0])
-                            q.pop(0)
                             await interaction.reply(`now playing: ${q[0].title}`)
+                            q.pop(0)
+                            
                         } else {
                             await interaction.reply('i was gonna put something here')
                         }
@@ -224,7 +265,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply('bro theres nothing playing whatchu expect to happen')
             }
 
-        } else if (commandName === 'queue'){
+        } else if (commandName === 'queue'){                                    
             //find the player
             if( active_players != [] ){
                 for( let i in active_players ){
@@ -242,7 +283,49 @@ client.on('interactionCreate', async interaction => {
             } else {
                 await interaction.reply('bro theres nothing playing whatchu expect to happen')
             }
-        } 
+        } else if (commandName === 'clear'){                                    
+
+            
+            //find the player
+            if( active_players != [] ){
+                for( let i in active_players ){
+                    if( active_players[i].id == interaction.guild.id ){
+                        if( active_players[i].queue = []){ await interaction.reply('there is nothing in the queue') } 
+                        else{ active_players[i].queue = []; await interaction.reply('clearing the queue') }
+                        return
+                    }
+                }
+            } else {
+                await interaction.reply('guild id not found in active players')
+            }
+
+ 
+ 
+        } else if (commandName === 'leave'){                                    
+
+            //find the player
+            if( active_players != [] ){
+                for( let i in active_players ){
+                    if( active_players[i].id == interaction.guild.id ){
+                        active_players[i].disconnect()
+                        await interaction.reply('leaving...')
+                        active_players.pop(i)
+                        return
+                    }
+                }
+            } else {
+                await interaction.reply('guild id not found in active players')
+            }
+
+        } else if (commandName === 'uberduck'){     //uberduck tts (does not work yet)                 
+
+            await interaction.deferReply()
+
+            await new uberduck().reqAudio(interaction)
+
+            // console.log(interaction)
+
+        }
 
     }else if( interaction.isSelectMenu() ){                  //menu events
 
@@ -278,11 +361,6 @@ client.on('interactionCreate', async interaction => {
 
 
 });
-
-//ahhh yes the sleep function
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 //login to discord
 client.login(keys.token);

@@ -49,7 +49,7 @@ class e621 {
 
                 //add to the log file
                 command_log.log.push(new_command_data)
-                fs.writeFileSync(file_locations.nsfw_command_list_long, JSON.stringify(command_log), (a, b)=>{ console.log(a + b) })
+                fs.writeFileSync(file_locations.nsfwCmdLog, JSON.stringify(command_log), (a, b)=>{ console.log(a + b) })
 
                 //create embed
                 const embed = new EmbedBuilder()

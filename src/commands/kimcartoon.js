@@ -30,7 +30,7 @@ class kimcartoon {
                 var larger_then_25 = false
 
                 //read file
-                const KC_log = require(file_locations.KimCartoon_log)
+                const KC_log = require(file_locations.KimCartoonCmdLog)
 
                 //append new data
                 const write_data = {
@@ -40,7 +40,7 @@ class kimcartoon {
 
                 //write it to the logfile
                 KC_log.push(write_data)
-                fs.writeFileSync(file_locations.KimCartoon_log_long, JSON.stringify(KC_log), (a, b)=>{ console.log(a + b) })
+                fs.writeFileSync(file_locations.KimCartoonCmdLog, JSON.stringify(KC_log), (a, b)=>{ console.log(a + b) })
 
                 for(let i in res){
 
@@ -131,7 +131,7 @@ class kimcartoon {
         const value = ctx.values[0]            
 
         //read file
-        const KC_log = require(file_locations.KimCartoon_log)
+        const KC_log = require(file_locations.KimCartoonCmdLog)
 
         //find the request id
         let query = undefined
@@ -163,7 +163,7 @@ class kimcartoon {
                 var larger_then_25 = false
 
                 //read file
-                const KC_log = require(file_locations.KimCartoon_log)
+                const KC_log = require(file_locations.KimCartoonCmdLog)
 
                 //append new data
                 const write_data = {
@@ -173,7 +173,7 @@ class kimcartoon {
 
                 //write it
                 KC_log.push(write_data)
-                fs.writeFileSync(file_locations.KimCartoon_log_long, JSON.stringify(KC_log), (a, b)=>{ console.log(a + b) })
+                fs.writeFileSync(file_locations.KimCartoonCmdLog, JSON.stringify(KC_log), (a, b)=>{ console.log(a + b) })
 
                 for(let i in res){
 
@@ -259,7 +259,7 @@ class kimcartoon {
         const value = ctx.values[0]
 
         //read file
-        const KC_log = require(file_locations.KimCartoon_log)
+        const KC_log = require(file_locations.KimCartoonCmdLog)
 
         //find the request id
         let query = undefined 
@@ -289,7 +289,7 @@ class kimcartoon {
         let request_id = ctx.message.embeds[0].data.fields[0].value
 
         //read file
-        const KC_log = require(file_locations.KimCartoon_log)
+        const KC_log = require(file_locations.KimCartoonCmdLog)
 
         //find the request id
         let kcData = undefined 
