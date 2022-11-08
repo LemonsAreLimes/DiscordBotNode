@@ -7,6 +7,8 @@ const { musicCommands } = require('./music')
 const { rule34 } = require('./rule34')
 const { e621 } = require('./e621')
 const { kimcartoon } = require('./kimcartoon')
+const { uberduck } = require('./uberduck')
+
 // const { uberduck } = require('./uberduck')
 
 //for deploy commands
@@ -87,9 +89,21 @@ class deployCommands{
             //leave command
             new SlashCommandBuilder()
                 .setName('leave')
-                .setDescription('leaves the current voice channel')
+                .setDescription('leaves the current voice channel'),
 
-        
+            //uberduck tts 
+            new SlashCommandBuilder()
+                .setName('uberduck')
+                .setDescription('text to speech')
+                .addStringOption(option => option
+                    .setName('text')
+                    .setDescription('what do you want the man to say?')
+                    .setRequired(true))  
+                .addStringOption(option => option
+                    .setName('voice')
+                    .setDescription('what voice do you want to use?')
+                    .setAutocomplete(true))
+
         ].map(command => command.toJSON());
 
     }
@@ -135,5 +149,6 @@ module.exports = {
     rule34,
     e621,
     kimcartoon,
+    uberduck, 
     
 }

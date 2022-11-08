@@ -1,16 +1,21 @@
 {
     "keys":{
-        "token":"OTk0MTMzMjIzNjc0MjI4NzM2.GNBqLP.JFPkQ6PCS2tdLEiLNhTkDFwgYDhm9kjxDb7z-E",
-        "google":""
+        "token":""
     },
 
     "file_locations":{
         "nsfwCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
         "KimCartoonCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
-        "guildConfig":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json"
+        "guildConfig":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json",
+        "uberduckTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/uberduckTemp"
     },
 
-    "reloadCommandsOnReady":true,
+    "scripts":{
+        "kimCartoon":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/kimcartoon.py",
+        "uberduck":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/uberduck.py"
+    },
+
+    "reloadCommandsOnReady":false,
     "clientId": "994133223674228736"
 }
 

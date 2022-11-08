@@ -1,7 +1,6 @@
-// Require the necessary discord.js classes
 const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js');
 
-const { musicCommands, rule34, e621, kimcartoon, deployCommands } = require('./commands/command_header');
+const { musicCommands, rule34, e621, kimcartoon, deployCommands, uberduck } = require('./commands/command_header');
 const { keys, reloadCommandsOnReady } = require('./config.json');
 const { guilds } = require('./guilds.json');
 
@@ -139,17 +138,14 @@ client.on('messageReactionRemove', async (message, user) => {
 
 });
 
-
 //create the active players list (only used for music commands)
 let active_players = []
-console.log('player initalized')
 
-//command and button events
+//commands, select menus, buttons and autocomplete interactions
 client.on('interactionCreate', async interaction => {
-    
 	const { commandName } = interaction;
 
-    if (interaction.isChatInputCommand()){                   //slash commands
+    if (interaction.isChatInputCommand()){                   //slash commands   
 
         if (commandName === 'ping') {               //online test command           
             await interaction.reply('Pong!');
@@ -318,16 +314,11 @@ client.on('interactionCreate', async interaction => {
             }
 
         } else if (commandName === 'uberduck'){     //uberduck tts (does not work yet)                 
-
             await interaction.deferReply()
-
-            await new uberduck().reqAudio(interaction)
-
-            // console.log(interaction)
-
+            new uberduck().generateSpeech(interaction)
         }
 
-    }else if( interaction.isSelectMenu() ){                  //menu events
+    }else if( interaction.isSelectMenu() ){                  //menu events      
 
         if (interaction.customId === 'select_season'){              //gets the episode from main select menu
             
@@ -341,7 +332,7 @@ client.on('interactionCreate', async interaction => {
 
         }
     
-    }else if( interaction.isButton() ){                      //button events
+    }else if( interaction.isButton() ){                      //button events    
 
         if (interaction.customId == "prev" || interaction.customId == "next"){                  //prev / next buttons for nsfw commands
 
@@ -355,10 +346,15 @@ client.on('interactionCreate', async interaction => {
         
         }
     
+    }else if( interaction.isAutocomplete() ){                //autocomplete     
+        
+        if( commandName == 'uberduck' ){
+            await new uberduck().searchVoice(interaction)
+        }
+        
     }else {
         console.log('command not recognized!')
     } 
-
 
 });
 
