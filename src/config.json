@@ -1,13 +1,17 @@
 {
     "keys":{
-        "token":""
+        "token":"",
+        "uberDuckAuth":""
     },
 
     "file_locations":{
+        "guildConfig":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json",
+
         "nsfwCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
         "KimCartoonCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
-        "guildConfig":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json",
-        "uberduckTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/uberduckTemp"
+        "uberduckTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/uberduckTemp",
+        "locketTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/heartLocketTemp/",
+        "audioTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/audioTemp/"
     },
 
     "scripts":{

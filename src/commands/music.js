@@ -3,6 +3,8 @@ const { QueryType, Player } = require("discord-player")
 const ytdl = require('ytdl-core')
 const fs = require('fs')
 
+const { file_locations } = require('../config.json') 
+
 class musicCommands {
 
     constructor(client){
@@ -88,11 +90,11 @@ class musicCommands {
         //download the audio
         const audio_id = Math.round(Math.random() * 1000000)
         ytdl(song_obj.url, { filter: "audioonly", format: "mp3" } )
-            .pipe(fs.createWriteStream(`C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/audioTemp/${audio_id}.mp3`))
+            .pipe(fs.createWriteStream(file_locations.audioTempFolder+`${audio_id}.mp3`))
             .on('finish', () => { 
 
                 //when done downloading, play the audio
-                let resource = createAudioResource(`C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/audioTemp/${audio_id}.mp3`, { inlineVolume: true })
+                let resource = createAudioResource(file_locations.audioTempFolder+`${audio_id}.mp3`, { inlineVolume: true })
                 resource.volume.setVolume(1)
                 this.audio_player.play(resource)
         });
