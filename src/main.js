@@ -29,12 +29,12 @@ client.once('ready', async () => {
         await new deployCommands().reloadAll()
     }
 
-    console.log('██████╗  ██████╗ ██╗  ██╗ ██████╗ ')
-    console.log('██╔══██╗██╔═══██╗██║ ██╔╝██╔═══██╗')
-    console.log('██████╔╝██║   ██║█████╔╝ ██║   ██║ ┌┐ ┌─┐┌─┐┬┬  ┬┌─┐┬┌─')
-    console.log('██╔══██╗██║   ██║██╔═██╗ ██║   ██║ ├┴┐├─┤└─┐││  │└─┐├┴┐')
-    console.log('██║  ██║╚██████╔╝██║  ██╗╚██████╔╝ └─┘┴ ┴└─┘┴┴─┘┴└─┘┴ ┴')
-    console.log('╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝   ~is now online!')
+    console.log('██████╗  ██████╗ ██╗  ██╗ ██████╗ ┌┐ ┌─┐┌─┐┬┬  ┬┌─┐┬┌─')
+    console.log('██╔══██╗██╔═══██╗██║ ██╔╝██╔═══██╗├┴┐├─┤└─┐││  │└─┐├┴┐')
+    console.log('██████╔╝██║   ██║█████╔╝ ██║   ██║└─┘│ ┴└─┘┴┴─┘┴└─┘┴ |')
+    console.log('██╔══██╗██║   ██║██╔═██╗ ██║   ██║   │~is now online!|')
+    console.log('██║  ██║╚██████╔╝██║  ██╗╚██████╔╝   ┴───────────────┴')
+    console.log('╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ written by lemonsarelimes')
 
 });
 
@@ -49,12 +49,37 @@ client.on('guildMemberAdd', async member => {
 
         if (guilds[i].id == guild_id && guilds[i].joiner_channel != ""){
             
-            //send welcome message in welcome channel
-            client.channels.cache.get(guilds[i].joiner_channel).send(
-                `welcome ${member.user.username}#${member.user.discriminator} to the server~
-                check out #roles to be verified among outher things`
-            )
+            //create the embed
+            const embed = new EmbedBuilder()
+                .setColor(0x2FFF00)
+                .setTitle(`${member.user.username}#${member.user.discriminator} has joined the server~`)
 
+            //send it
+            client.channels.cache.get(guilds[i].joiner_channel).send({ embeds:[embed] })
+            break
+        }
+    }
+});
+
+
+//user leave event
+client.on('guildMemberRemove', async member => {
+
+    //get the current guild
+    const guild_id = member.guild.id
+
+    //find the guilds joiner channel in config 
+    for (let i in guilds){
+
+        if (guilds[i].id == guild_id && guilds[i].joiner_channel != ""){
+            
+            //create the embed
+            const embed = new EmbedBuilder()
+                .setColor(0xFF001A)
+                .setTitle(`${member.user.username}#${member.user.discriminator} has left the server :/`)
+
+            //send it
+            client.channels.cache.get(guilds[i].joiner_channel).send({ embeds:[embed] })
             break
         }
     }
@@ -202,7 +227,13 @@ client.on('interactionCreate', async interaction => {
                         //if its playing add to queue
                         if( active_players[i].playing ){
                             active_players[i].queue.push(search_result)
-                            await interaction.editReply(`adding: ${search_result.title} to the queue`)
+
+                            //create the embed 
+                            const embed = new EmbedBuilder()
+                                .setColor(0x00FF66)
+                                .setTitle(`adding: ${search_result.title} to the queue`)
+
+                            await interaction.editReply({ embeds: [embed] })
                         } else {
                             active_players[i].play(search_result)
                         }
@@ -213,13 +244,18 @@ client.on('interactionCreate', async interaction => {
 
             //initalize the music command hanler and connect to the voice channel
             command_handler.init(interaction)
-            command_handler.connect(interaction)
+            await command_handler.connect(interaction)
             
             //download and play the file
-            command_handler.play(search_result)
+            await command_handler.play(search_result)
             
+            //create embed
+            const embed = new EmbedBuilder()
+                .setColor(0x00E5FF)
+                .setTitle(`now playing: ${search_result.title}`)
+
             //respond to the interaction
-            await interaction.editReply(`now playing: ${search_result.title}`)
+            await interaction.editReply({embeds: [embed]})
             active_players.push(command_handler)
 
         } else if (commandName === 'pause'){                                    
@@ -228,9 +264,13 @@ client.on('interactionCreate', async interaction => {
             if( active_players != [] ){
                 for( let i in active_players ){
                     if( active_players[i].id == interaction.guild.id ){
-                        if( active_players[i].paused ){ await interaction.reply('unpausing...') } 
-                        else { await interaction.reply('pausing...') }
+
+                        let embed
+                        if( active_players[i].paused ){ embed = new EmbedBuilder().setColor(0x00E5FF).setTitle("unpaused") } 
+                        else { embed = new EmbedBuilder().setColor(0x00E5FF).setTitle("pasued")  }
                         active_players[i].pause()
+
+                        await interaction.reply({ embeds:[embed] })
                         return
                     }
                 }
@@ -248,11 +288,22 @@ client.on('interactionCreate', async interaction => {
                         if( active_players[i].playing ){
                             const q = active_players[i].queue
                             active_players[i].play(q[0])
-                            await interaction.reply(`now playing: ${q[0].title}`)
+
+                            //create embed
+                            const embed = new EmbedBuilder()
+                                .setColor(0x00FFBF)
+                                .setTitle(`now playing: ${q[0].title}`)
+
+                            await interaction.reply({embeds: [embed]})
                             q.pop(0)
                             
                         } else {
-                            await interaction.reply('i was gonna put something here')
+                            //create embed 
+                            const embed = new EmbedBuilder()
+                                .setColor(0xFF002F)
+                                .setTitle('there is nothing playing...')
+
+                            await interaction.reply({embeds: [embed]})
                         }
 
                     }
@@ -269,11 +320,25 @@ client.on('interactionCreate', async interaction => {
 
                         let response = ''
                         for( let x in active_players[i].queue ){
-                            response += active_players[i].queue[x].title + ', \n' 
+                            response += active_players[i].queue[x].title + '\n' 
                         }
 
-                        if( response == '' ){ await interaction.reply('there is nothing in the queue') }
-                        else { await interaction.reply(response) } 
+                        console.log(response)
+
+                        if( response == '' ){ 
+                            console.log('empty res')
+                            const embed = new EmbedBuilder().setColor(0xFF003C).setTitle('there is nothing in the queue') 
+                            await interaction.reply({ embed: [embed] })
+                        }
+                        else { 
+                            console.log('non emmpty resposne')
+                            const embed = new EmbedBuilder().setColor(0x00FF66).setTitle("queue: " + response) 
+                            // await interaction.reply({ embed: [embed] })
+                            await interaction.reply(response)
+                        }
+
+
+                        
                     }
                 }
             } else {
@@ -304,7 +369,12 @@ client.on('interactionCreate', async interaction => {
                 for( let i in active_players ){
                     if( active_players[i].id == interaction.guild.id ){
                         active_players[i].disconnect()
-                        await interaction.reply('leaving...')
+
+                        const embed = new EmbedBuilder()
+                            .setColor(0x00FF66) 
+                            .setTitle('leaving')
+
+                        await interaction.reply({ embeds:[embed] })
                         active_players.pop(i)
                         return
                     }
