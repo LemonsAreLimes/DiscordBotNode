@@ -3,7 +3,16 @@ const { QueryType, Player } = require("discord-player")
 const ytdl = require('ytdl-core')
 const fs = require('fs')
 
-const { file_locations } = require('../config.json') 
+const { file_locations, useRandomAudio } = require('../config.json') 
+const { guilds } = require('../guilds.json')
+
+
+//define the sleep function
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
 
 class musicCommands {
 
@@ -17,17 +26,20 @@ class musicCommands {
         this.audio_player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
         this.player = new Player(client, { ytdlOptions: { quality: "highestaudio" } })
         this.connection = {}
+        this.ballsTimeout = false
 
         this.player.on('botDisconnect', () => {
             this.id = null
             console.log('removing player...')
         });
 
-        this.audio_player.on(AudioPlayerStatus.Idle, (x, y) => {
+        this.audio_player.on(AudioPlayerStatus.Idle, async (x, y) => {
             this.playing = false
 
             //check if the queue is empty
             if( this.queue[0] ){
+
+                console.log('the queue is not empty')
 
                 //play the first element then remove the first element
                 this.play(this.queue[0])
@@ -36,12 +48,28 @@ class musicCommands {
                 console.log(this.queue)    
 
             } else {
-                console.log('the queue is empty')
+                console.log('the queue is empty');
+
+                //check if this feature is enabled
+                if( !useRandomAudio ){ return } 
+
+                //when nothing is playing, set a random timeout
+                const timeoutMultiplier = 100;
+                const timeout = Math.floor(Math.random() * 1000) * timeoutMultiplier;
+                await sleep(timeout);
+                
+                //select an audio from the random audio folder
+                let audio_list = fs.readdirSync(file_locations.randomAudio)
+                let selected_index = Math.floor(Math.random() * audio_list.length)
+                let selected =  file_locations.randomAudio+audio_list[selected_index]
+
+                // play it
+                let resource = createAudioResource(selected, { inlineVolume: true })
+                resource.volume.setVolume(1)
+                this.audio_player.play(resource)
+
             }
-
         });
-
-
     }
 
     init(ctx){
@@ -86,6 +114,9 @@ class musicCommands {
     //downloads and plays output from search
     async play(song_obj){
         this.playing = true
+
+        //check if the balls timeout has been set
+        if( this.ballsTimeout ){this.ballsTimeout = false}
 
         //download the audio
         const audio_id = Math.round(Math.random() * 1000000)

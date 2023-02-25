@@ -1,6 +1,6 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, ContextMenuCommandAssertions } = require('discord.js');
 
-const { musicCommands, rule34, e621, kimcartoon, deployCommands, uberduck, heartLocket } = require('./commands/command_header');
+const { musicCommands, rule34, e621, kimcartoon, deployCommands, uberduck } = require('./commands/command_header');
 const { keys, reloadCommandsOnReady } = require('./config.json');
 const { guilds } = require('./guilds.json');
 
@@ -31,8 +31,8 @@ client.once('ready', async () => {
 
     console.log('██████╗  ██████╗ ██╗  ██╗ ██████╗ ┌┐ ┌─┐┌─┐┬┬  ┬┌─┐┬┌─')
     console.log('██╔══██╗██╔═══██╗██║ ██╔╝██╔═══██╗├┴┐├─┤└─┐││  │└─┐├┴┐')
-    console.log('██████╔╝██║   ██║█████╔╝ ██║   ██║└─┘│ ┴└─┘┴┴─┘┴└─┘┴ |')
-    console.log('██╔══██╗██║   ██║██╔═██╗ ██║   ██║   │~is now online!|')
+    console.log('██████╔╝██║   ██║█████╔╝ ██║   ██║└─┘│ ┴└─┘┴┴─┘┴└─┘┴ │')
+    console.log('██╔══██╗██║   ██║██╔═██╗ ██║   ██║   │~is now online!│')
     console.log('██║  ██║╚██████╔╝██║  ██╗╚██████╔╝   ┴───────────────┴')
     console.log('╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ written by lemonsarelimes')
 
@@ -385,20 +385,13 @@ client.on('interactionCreate', async interaction => {
 
         } else if (commandName === 'uberduck'){     //uberduck tts              
             await interaction.deferReply()
-            new uberduck().generateSpeech(interaction)
-        } else if (commandName === 'locket'){       //makesweet locket          
-            
-            await interaction.deferReply()
+            let voice = interaction.options.getString('voice')
+            let text = interaction.options.getString('text')
 
-            const handler = new heartLocket()
-
-            //check the args
-            const x = await handler.convertArgs(interaction)            
-            if(!x){return}
-
-            //make it do the thing
-            await handler.makeLocket(interaction, x)
- 
+            let x = new uberduck();
+            let link = await x.gen_speech(text, voice, interaction)
+            x.send_response(text, voice, link, interaction )
+    
         }
 
     }else if( interaction.isSelectMenu() ){                  //menu events      
@@ -432,7 +425,9 @@ client.on('interactionCreate', async interaction => {
     }else if( interaction.isAutocomplete() ){                //autocomplete     
         
         if( commandName == 'uberduck' ){
-            await new uberduck().searchVoice(interaction)
+            let q = interaction.options.getString('voice')
+            let x = await new uberduck().search_voices(q)
+            interaction.respond(x)
         }
         
     }else {

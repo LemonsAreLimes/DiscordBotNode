@@ -8,7 +8,6 @@ const { rule34 } = require('./rule34')
 const { e621 } = require('./e621')
 const { kimcartoon } = require('./kimcartoon')
 const { uberduck } = require('./uberduck')
-const { heartLocket } = require('./heartLocket')
 
 
 //for deploy commands
@@ -102,25 +101,9 @@ class deployCommands{
                 .addStringOption(option => option
                     .setName('voice')
                     .setDescription('what voice do you want to use?')
-                    .setAutocomplete(true)),
+                    .setAutocomplete(true)
+                    .setRequired(true)),
 
-            //heartlocket gen
-            new SlashCommandBuilder()
-                .setName('locket')
-                .setDescription("my beloved")
-                .addStringOption(option => option
-                    .setName('text')
-                    .setDescription('what do you want the heart locket to say?'))  
-                .addStringOption(option => option
-                    .setName('text2')
-                    .setDescription('what do you want the heart locket to say?'))  
-                .addAttachmentOption(option =>  option
-                    .setName('image')
-                    .setDescription('what image do you want to use?'))
-                .addAttachmentOption(option =>  option
-                    .setName('image2')
-                    .setDescription('what image do you want to use?'))
-    
 
         ].map(command => command.toJSON());
 
@@ -167,7 +150,6 @@ module.exports = {
     rule34,
     e621,
     kimcartoon,
-    uberduck, 
-    heartLocket,
+    uberduck,
     
 }

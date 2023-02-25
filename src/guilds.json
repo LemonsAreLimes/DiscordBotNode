@@ -30,6 +30,7 @@
         {
             "id":"989980425529212999",
             "name":"the server lol",
+            "balls": true,
             "joiner_channel":"990364347446460426",
             "role_add_message":"1031054096708411412",
             "roles":{

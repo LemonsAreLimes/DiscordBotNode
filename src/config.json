@@ -1,24 +1,25 @@
 {
     "keys":{
         "token":"",
-        "uberDuckAuth":""
+        "uberduckConfig": "C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/UDconf.json"
     },
 
     "file_locations":{
-        "guildConfig":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json",
-
-        "nsfwCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
-        "KimCartoonCmdLog":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
-        "uberduckTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/uberduckTemp",
-        "locketTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/heartLocketTemp/",
-        "audioTempFolder":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/audioTemp/"
+        "guildConfig":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/guilds.json",
+        "nsfwCmdLog":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/command_log.json",
+        "KimCartoonCmdLog":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/logTemp/KimCartoon_log.json",
+        "uberduckTempFolder":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/uberduckTemp",
+        "locketTempFolder":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/heartLocketTemp/",
+        "audioTempFolder":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/audioTemp/",
+        "randomAudio":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/randomAudio/"
     },
 
     "scripts":{
-        "kimCartoon":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/kimcartoon.py",
-        "uberduck":"C:/Users/USER/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/uberduck.py"
+        "kimCartoon":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/kimcartoon.py",
+        "uberduck":"C:/Users/lemons/Documents/visual_studio_code/JAVASCRIPT/DiscordBot/src/commands/ext/uberduck.py"
     },
 
+    "useRandomAudio": true,
     "reloadCommandsOnReady":false,
     "clientId": "994133223674228736"
 }
