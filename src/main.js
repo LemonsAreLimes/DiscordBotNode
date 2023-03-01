@@ -1,6 +1,5 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder, ContextMenuCommandAssertions } = require('discord.js');
-
-const { musicCommands, rule34, e621, kimcartoon, deployCommands, uberduck } = require('./commands/command_header');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js');
+const { musicCommands, rule34, e621, deployCommands, uberduck } = require('./commands/command_header');
 const { keys, reloadCommandsOnReady } = require('./config.json');
 const { guilds } = require('./guilds.json');
 
@@ -194,10 +193,7 @@ client.on('interactionCreate', async interaction => {
         } else if (commandName === 'e621'){         //e621                          
             await new e621().search(interaction)
 
-        } else if (commandName === 'kimcartoon'){   //kimcartoon api                
 
-            await interaction.deferReply()
-            await new kimcartoon().search(interaction)
 
         } else if (commandName === 'play'){         //music commands                
 
@@ -258,7 +254,7 @@ client.on('interactionCreate', async interaction => {
             await interaction.editReply({embeds: [embed]})
             active_players.push(command_handler)
 
-        } else if (commandName === 'pause'){                                    
+        } else if (commandName === 'pause'){                                        
 
             //find the player
             if( active_players != [] ){
@@ -278,7 +274,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply('bro theres nothing playing whatchu expect to happen')
             }
 
-        } else if (commandName === 'skip'){                                     
+        } else if (commandName === 'skip'){                                         
             //find the player
             if( active_players != [] ){
                 for( let i in active_players ){
@@ -312,7 +308,9 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply('bro theres nothing playing whatchu expect to happen')
             }
 
-        } else if (commandName === 'queue'){                                    
+        } else if (commandName === 'queue'){                                        
+            await interaction.deferReply()
+            
             //find the player
             if( active_players != [] ){
                 for( let i in active_players ){
@@ -324,27 +322,26 @@ client.on('interactionCreate', async interaction => {
                         }
 
                         console.log(response)
+                        console.log(response.length)
 
                         if( response == '' ){ 
                             console.log('empty res')
                             const embed = new EmbedBuilder().setColor(0xFF003C).setTitle('there is nothing in the queue') 
-                            await interaction.reply({ embed: [embed] })
+                            await interaction.editReply({ embeds: [embed] })
+                            break
                         }
                         else { 
                             console.log('non emmpty resposne')
-                            const embed = new EmbedBuilder().setColor(0x00FF66).setTitle("queue: " + response) 
-                            // await interaction.reply({ embed: [embed] })
-                            await interaction.reply(response)
+                            const embed = new EmbedBuilder().setColor(0x00FF66).setTitle("Queue").setDescription(response)
+                            await interaction.editReply({ embeds: [embed] })
+                            break
                         }
-
-
-                        
                     }
                 }
             } else {
                 await interaction.reply('bro theres nothing playing whatchu expect to happen')
             }
-        } else if (commandName === 'clear'){                                    
+        } else if (commandName === 'clear'){                                        
 
             
             //find the player
@@ -362,7 +359,7 @@ client.on('interactionCreate', async interaction => {
 
  
  
-        } else if (commandName === 'leave'){                                    
+        } else if (commandName === 'leave'){                                        
 
             //find the player
             if( active_players != [] ){
@@ -383,7 +380,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply('guild id not found in active players')
             }
 
-        } else if (commandName === 'uberduck'){     //uberduck tts              
+        } else if (commandName === 'uberduck'){     //uberduck tts                  
             await interaction.deferReply()
             let voice = interaction.options.getString('voice')
             let text = interaction.options.getString('text')
@@ -394,33 +391,13 @@ client.on('interactionCreate', async interaction => {
     
         }
 
-    }else if( interaction.isSelectMenu() ){                  //menu events      
-
-        if (interaction.customId === 'select_season'){              //gets the episode from main select menu
-            
-            await interaction.deferReply()
-            await new kimcartoon().select_season(interaction)
-
-        } else if (interaction.customId === 'select_episode') {     //gets the video link from season select menu
-
-            await interaction.deferReply()
-            await new kimcartoon().select_episode(interaction)
-
-        }
-    
     }else if( interaction.isButton() ){                      //button events    
 
         if (interaction.customId == "prev" || interaction.customId == "next"){                  //prev / next buttons for nsfw commands
 
             await interaction.deferUpdate()
             await new rule34().getRequest(client, interaction)  //will work for both rule34 and e621
-
-        } else if (interaction.customId == "KC_prev" || interaction.customId == "KC_next"){     //prev / next buttons for kimcartoon
-
-            await interaction.deferUpdate()
-            await new kimcartoon().nextAndPrev(interaction)
-        
-        }
+        } 
     
     }else if( interaction.isAutocomplete() ){                //autocomplete     
         

@@ -26,7 +26,6 @@ class musicCommands {
         this.audio_player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
         this.player = new Player(client, { ytdlOptions: { quality: "highestaudio" } })
         this.connection = {}
-        this.ballsTimeout = false
 
         this.player.on('botDisconnect', () => {
             this.id = null
@@ -114,9 +113,6 @@ class musicCommands {
     //downloads and plays output from search
     async play(song_obj){
         this.playing = true
-
-        //check if the balls timeout has been set
-        if( this.ballsTimeout ){this.ballsTimeout = false}
 
         //download the audio
         const audio_id = Math.round(Math.random() * 1000000)

@@ -6,7 +6,6 @@ const { guilds } = require('../guilds.json')
 const { musicCommands } = require('./music')
 const { rule34 } = require('./rule34')
 const { e621 } = require('./e621')
-const { kimcartoon } = require('./kimcartoon')
 const { uberduck } = require('./uberduck')
 
 
@@ -46,25 +45,9 @@ class deployCommands{
                     .setName('tags')
                     .setDescription('tags to search')),
         
-            //KimCartoon
-            new SlashCommandBuilder()
-                .setName('kimcartoon')
-                .setDescription('Kimcartoon api (no need to deal with ads)')
-                .addStringOption(option => option
-                    .setName('query')
-                    .setDescription('cartoon name')),
-        
-            //deepdream
-            new SlashCommandBuilder()
-                .setName('deep_dream')
-                .setDescription('deepdreams any image')
-                .addAttachmentOption(option => option
-                    .setName('attachment')
-                    .setDescription('what should i dream up?')),
-        
             //play command
             new SlashCommandBuilder()
-                .setName('play')
+                .setName('search')
                 .setDescription("play somethin'")
                 .addStringOption(option => option
                     .setName('name')
@@ -137,19 +120,14 @@ class deployCommands{
     
     }
 
-
-
 }
 
 
 
 module.exports = {
-
     deployCommands,
     musicCommands,
     rule34,
     e621,
-    kimcartoon,
     uberduck,
-    
 }
